@@ -25,4 +25,12 @@ public class TestPedidos {
 
     }
 
+    @Test
+    public void servirPedidoTest(){
+
+    }
+
+    //@Test(expected = NoPedidosException.class)
+
+
 }
