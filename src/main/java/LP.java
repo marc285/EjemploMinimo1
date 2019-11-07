@@ -8,7 +8,7 @@ public class LP{ //Dupla Pedido-Cantidad
     }
 
     public int getNumPedidos(){
-        return this.num;
+        return this.numPedidos;
     }
 
     public String getIdProducto(){

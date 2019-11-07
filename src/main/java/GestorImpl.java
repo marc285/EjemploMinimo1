@@ -59,8 +59,10 @@ public class GestorImpl implements Gestor {
     }
 
     public LinkedList<Producto> productosOrdVentas() throws NoPedidosException{
-        if(chechPedidos())
+        if(chechPedidos()){
+            log.error("Error. Cola de pedidos vacía.");
             throw new NoPedidosException();
+        }
         else{
             LinkedList<Producto> res = new LinkedList<Producto>();
             this.listaProductos.sort(new Comparator<Producto>() {
@@ -89,7 +91,7 @@ public class GestorImpl implements Gestor {
         this.listaProductos.push(p);
     }
     public LinkedList<Producto> getProductos(){
-        return this.listaProductos);
+        return this.listaProductos;
     }
 
     //Funciones auxiliares

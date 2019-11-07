@@ -29,6 +29,11 @@ public class TestPedidos {
 
     }
 
+
+    public void tearDown (){
+
+    }
+
     @Test
     public void anotarPedidoTest() {
         gestor.anotarPedido(p);
@@ -39,7 +44,7 @@ public class TestPedidos {
         Assert.assertEquals("bocadillo_jamon", p.getLP(p.getLPsize() - 1).getIdProducto());
 
         //Comprobamos que se han introducido bien los datos en las estructuras del gestor
-        Assert.assertEquals("Toni", gestor.getUsuarios().get("12345").getID());
+        Assert.assertEquals("Toni", gestor.getUsuarios().get("12345").getNombre());
 
     }
 
