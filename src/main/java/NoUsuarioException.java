@@ -1,3 +1,3 @@
 public class NoUsuarioException extends Exception {
-    //Error lanzado cuando no se encuentra el usuario en la tabla de Hash
+    //Excepcion lanzada lanzado cuando no se encuentra el usuario en la tabla de Hash (POR VACÍA O POR NOMBRE INCORRECTO)
 }

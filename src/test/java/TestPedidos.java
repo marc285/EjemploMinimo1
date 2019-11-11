@@ -1,3 +1,4 @@
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,20 +25,19 @@ public class TestPedidos {
 
         p = new Pedido("12345");
         p.addLP(3, "chocolatina");
-        p.addLP(1, "zumo_naranja");
+        p.addLP(2, "zumo_naranja");
         p.addLP(1, "bocadillo_jamon");
 
+        gestor.anotarPedido(p);
     }
 
-
+    //para el singleton
     public void tearDown (){
 
     }
 
     @Test
-    public void anotarPedidoTest() {
-        gestor.anotarPedido(p);
-
+    public void anotarPedidoTest(){
         //Comprobar que se ha hecho bien el pedido
         Assert.assertEquals("12345", p.getIDUsuario());
         Assert.assertEquals("chocolatina", p.getLP(0).getIdProducto());
@@ -45,22 +45,86 @@ public class TestPedidos {
 
         //Comprobamos que se han introducido bien los datos en las estructuras del gestor
         Assert.assertEquals("Toni", gestor.getUsuarios().get("12345").getNombre());
-
+        Assert.assertEquals("zumo_naranja", gestor.getProductos().get(gestor.getProductos().size() - 1).getID());
+        Assert.assertEquals(1.2, 1.2, gestor.getProductos().get(gestor.getProductos().size() - 1).getPrecio());
     }
 
     @Test
-    public void servirPedidoTest(){
-        Assert.assertEquals(4, gestor.getProductos().getFirst().getVentas());
-        Assert.assertEquals(1, gestor.getProductos().getLast().getVentas());
+    public void servirPedidoTest() throws NoPedidosException {
+        gestor.servirPedido();
+        Assert.assertEquals(3, gestor.getProducto("chocolatina").getVentas());
+        Assert.assertEquals(1, gestor.getProducto("bocadillo_jamon").getVentas());
+
+        //COMPROBAR HISTORICO DE PEDIDOS DE USUARIO
+        //Ya se hace en la funcion comprobar pedidos por usuario
+    }
+
+    @Test (expected = NoPedidosException.class)
+    public void noPedidosExceptionTest() throws NoPedidosException{
+        gestor.servirPedido();
+        gestor.servirPedido();
     }
 
     @Test
-    public void ordenarProdPrecioTest() throws NoPedidosException {
+    public void ordenarProdPrecioTest() throws NoProductosException { //ORDENAR ASC
         LinkedList<Producto> prueba = gestor.productosOrdPrecio();
-        Assert.assertEquals("bocadillo_jamon", prueba.pop().getID());
+        Assert.assertEquals("chocolatina", prueba.getFirst().getID());
+        Assert.assertEquals("bocadillo_jamon", prueba.getLast().getID());
     }
 
-    //@Test(expected = NoPedidosException.class)
+    @Test
+    public void ordenarProdVentasTest() throws NoProductosException, NoPedidosException { //ORDENAR DESC
+        gestor.servirPedido(); //Puede lanzar un NoPedidosException porque se prueba el servirPedido para incrementar num de ventas en los productos
+        LinkedList<Producto> prueba = gestor.productosOrdVentas();
+        Assert.assertEquals("chocolatina", prueba.getFirst().getID());
+        Assert.assertEquals("cocacola", prueba.getLast().getID());
+    }
 
+    @Test (expected = NoProductosException.class)
+    public void noProductosExceptionTest() throws NoProductosException{
+        gestor.getProductos().clear();
+        gestor.productosOrdPrecio();
+        gestor.productosOrdVentas();
+    }
+
+    @Test
+    public void pedidosPorUsuarioTest() throws NoPedidosException, NoUsuarioException{
+        //Se comprueba tanto el registro de pedidos en el historico del usuario como la búsqueda del registro de un usuario especifcado
+        gestor.servirPedido();
+
+        LinkedList<Pedido> prueba = gestor.pedidosPorUsuario("12345");
+        Assert.assertEquals(1, prueba.size());
+        Assert.assertEquals(3, prueba.get(0).getLPsize());
+
+        Assert.assertEquals("chocolatina", prueba.get(0).getLP(0).getIdProducto());
+        Assert.assertEquals(3,prueba.get(0).getLP(0).getNumPedidos());
+
+        Assert.assertEquals("bocadillo_jamon", prueba.get(0).getLP(2).getIdProducto());
+        
+        //-------Probamos a meter un nuevo pedido--------//
+        Pedido pruebapedido = new Pedido("12345");
+        pruebapedido.addLP(1, "bocata_jamon");
+        pruebapedido.addLP(1, "cocacola");
+
+        gestor.anotarPedido(pruebapedido);
+        gestor.servirPedido(); //El pedido anterior ya ha sido servido (quitado de la cola) asi que ahora debería ser servido el nuevo pedido
+
+        LinkedList<Pedido> prueba2 = gestor.pedidosPorUsuario("12345");
+        Assert.assertEquals(2, prueba2.size());
+        Assert.assertEquals(2, prueba2.get(1).getLPsize());
+
+        Assert.assertEquals("cocacola", prueba2.get(1).getLP(1).getIdProducto());
+    }
+
+    @Test (expected = NoUsuarioException.class)
+    public void noUsuarioExceptionIDERRORTest() throws NoUsuarioException, NoPedidosException {
+        gestor.pedidosPorUsuario("1234");
+    }
+
+    @Test (expected = NoUsuarioException.class)
+    public void noUsuarioExceptionEMPTYTABLETest() throws NoUsuarioException, NoPedidosException{
+        gestor.getUsuarios().clear();
+        gestor.pedidosPorUsuario("12345");
+    }
 
 }

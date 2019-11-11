@@ -20,6 +20,6 @@ public class Usuario {
     }
 
     public void registrarPedido(Pedido p){ registro.add(p); }
-    public LinkedList<Pedido> getPedidos(){ return (LinkedList<Pedido>) this.registro; }
+    public LinkedList<Pedido> getRegistroPedidos(){ return (LinkedList<Pedido>) this.registro; }
 
 }

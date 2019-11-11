@@ -7,9 +7,7 @@ public class LP{ //Dupla Pedido-Cantidad
         this.idProducto = id;
     }
 
-    public int getNumPedidos(){
-        return this.numPedidos;
-    }
+    public int getNumPedidos(){ return this.numPedidos; }
 
     public String getIdProducto(){
         return this.idProducto;
