@@ -14,4 +14,6 @@ public interface Gestor {
     public void addProducto(String nombre, double precio);
     public LinkedList<Producto> getProductos();
     public Producto getProducto(String idProducto);
+
+    public void liberarRecursos();
 }

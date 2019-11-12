@@ -14,7 +14,7 @@ public class TestPedidos {
 
     @Before
     public void setUp (){
-        gestor = new GestorImpl();
+        gestor = GestorImpl.getInstance();
 
         gestor.addUsuario("12345","Toni");
 
@@ -31,9 +31,9 @@ public class TestPedidos {
         gestor.anotarPedido(p);
     }
 
-    //para el singleton
+    @After
     public void tearDown (){
-
+        gestor.liberarRecursos();
     }
 
     @Test
